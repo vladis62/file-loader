@@ -1,1 +1,24 @@
-
+spring:
+  application:
+    name: file-loader
+  webflux:
+    base-path: /${spring.application.name}
+  data:
+    r2dbc:
+      repositories:
+        enabled: true
+  r2dbc:
+    password: admin
+    username: admin
+    url: r2dbc:postgresql://localhost:5432/file-loader
+    pool:
+      enabled: true
+      initial-size: 5
+      max-idle-time: PT10M
+      max-size: 10
+  liquibase:
+    enabled: true
+    url: jdbc:postgresql://localhost:5432/file-loader
+    user: admin
+    password: admin
+    change-log: classpath:/changelog/changelog-master.yml

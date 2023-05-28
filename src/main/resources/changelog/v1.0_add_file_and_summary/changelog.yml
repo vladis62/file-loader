@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: file-loader-v1.0-id
+      author: vlados
+      runInTransaction: false
+      changes:
+        - tagDatabase:
+            tag: 'file-loader-v1.0-tag'
+        - sqlFile:
+            dbms: postgresql
+            encoding: UTF-8
+            endDelimiter: ';'
+            path: sql/CREATE_FILE_AND_SUMMARY.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true
+      rollback:
+        - sqlFile:
+            dbms: postgresql
+            encoding: UTF-8
+            endDelimiter: ';'
+            path: sql/DROP_FILE_AND_SUMMARY.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true
