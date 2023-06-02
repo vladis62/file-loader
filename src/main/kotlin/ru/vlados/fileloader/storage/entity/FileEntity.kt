@@ -13,7 +13,9 @@ const val FILE_TABLE_NAME = "file"
 @Table(FILE_TABLE_NAME)
 data class FileEntity(
     @Id
-    var id: String? = generateId(),
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column("id")
+    var id: Long? = null,
     @Column("url")
     val url: String,
     @Column("size")

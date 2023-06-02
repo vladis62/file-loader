@@ -30,10 +30,16 @@ dependencies {
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+    implementation("org.springdoc:springdoc-openapi-ui:1.6.9")
     runtimeOnly("org.postgresql:r2dbc-postgresql")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
+
+    val kotestVersion = "5.6.1"
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:$kotestVersion")
+    testRuntimeOnly("io.kotest:kotest-assertions-core-jvm:$kotestVersion")
+    testImplementation("io.kotest:kotest-property-jvm:$kotestVersion")
 }
 
 tasks.withType<KotlinCompile> {

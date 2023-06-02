@@ -3,6 +3,8 @@ spring:
     name: file-loader
   webflux:
     base-path: /${spring.application.name}
+  profiles:
+    active: dev
   data:
     r2dbc:
       repositories:
@@ -22,3 +24,8 @@ spring:
     user: admin
     password: admin
     change-log: classpath:/changelog/changelog-master.yml
+
+server:
+  servlet:
+    context-path: /${spring.application.name}
+  port: 8080
