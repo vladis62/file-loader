@@ -11,7 +11,7 @@ class FileController(
     private val fileService: FileService
 ) {
     @PostMapping("/files")
-    suspend fun downloadAndSaveFileAsync(@RequestParam url: String) {
-        fileService.downloadAndSaveFile(url)
+    suspend fun downloadAndSaveFileAsync() {
+        fileService.downloadAndSaveFiles()
     }
 }

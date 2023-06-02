@@ -8,9 +8,6 @@ const val SUMMARY_TABLE_NAME = "summary"
 
 @Table(SUMMARY_TABLE_NAME)
 data class SummaryEntity(
-    @Id
-    val id: Long? = null,
-
     @Column("files_count")
     val filesCount: Int,
 

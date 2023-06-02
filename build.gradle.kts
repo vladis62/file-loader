@@ -40,6 +40,8 @@ dependencies {
     testImplementation("io.kotest:kotest-runner-junit5-jvm:$kotestVersion")
     testRuntimeOnly("io.kotest:kotest-assertions-core-jvm:$kotestVersion")
     testImplementation("io.kotest:kotest-property-jvm:$kotestVersion")
+    testImplementation("io.mockk:mockk:1.13.5")
+
 }
 
 tasks.withType<KotlinCompile> {

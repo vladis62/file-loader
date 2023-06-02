@@ -13,3 +13,4 @@ create table if not exists summary
     files_size  bigint  not null
 );
 
+insert into summary (files_count, files_size) values (0, 0);

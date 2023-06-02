@@ -6,7 +6,6 @@ import jakarta.persistence.SequenceGenerator
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
-import ru.vlados.fileloader.storage.generateId
 
 const val FILE_TABLE_NAME = "file"
 
