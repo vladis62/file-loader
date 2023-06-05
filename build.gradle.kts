@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version "1.8.21"
     kotlin("plugin.spring") version "1.8.21"
     id("io.gitlab.arturbosch.detekt") version "1.22.0"
+    id("com.bmuschko.docker-spring-boot-application") version "9.3.1"
 }
 
 group = "ru.vlados"
@@ -26,22 +27,19 @@ dependencies {
     implementation("org.postgresql:postgresql")
     implementation("org.liquibase:liquibase-core")
 
+    implementation("io.github.microutils:kotlin-logging:3.0.5")
+
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-    implementation("org.springdoc:springdoc-openapi-ui:1.6.9")
     runtimeOnly("org.postgresql:r2dbc-postgresql")
-
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("io.projectreactor:reactor-test")
 
     val kotestVersion = "5.6.1"
     testImplementation("io.kotest:kotest-runner-junit5-jvm:$kotestVersion")
     testRuntimeOnly("io.kotest:kotest-assertions-core-jvm:$kotestVersion")
     testImplementation("io.kotest:kotest-property-jvm:$kotestVersion")
     testImplementation("io.mockk:mockk:1.13.5")
-
 }
 
 tasks.withType<KotlinCompile> {

@@ -4,7 +4,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.reactive.awaitFirstOrNull
-import kotlinx.coroutines.reactor.awaitSingleOrNull
+import mu.KLogging
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import ru.vlados.fileloader.service.client.FileClient
@@ -13,9 +13,13 @@ import ru.vlados.fileloader.storage.repository.FileRepository
 import ru.vlados.fileloader.storage.repository.SummaryRepository
 import ru.vlados.fileloader.utils.getFileExtension
 import ru.vlados.fileloader.utils.removePathFromURL
+import java.util.concurrent.atomic.*
 import kotlin.random.Random
 
 const val BATCH_SIZE = 100
+const val MAX_PARALLEL_DOWNLOAD_FILES = 100
+const val MIN_SIZE = 10
+const val MAX_SIZE = 5000
 
 @Service
 class FileService(
@@ -24,13 +28,18 @@ class FileService(
     private val summaryRepository: SummaryRepository
 ) {
 
+    companion object : KLogging()
+
+    private var isRunning = AtomicBoolean(false)
+
     suspend fun downloadAndSaveFiles() {
         val files = mutableListOf<FileEntity>()
-        val parallelism = 10 // Максимальное число одновременных загрузок
+        isRunning.set(true)
 
+        logger.info("Start download and save files...")
         coroutineScope {
-            while (true) {
-                val urls = generateUrls(parallelism)
+            while (isRunning.get()) {
+                val urls = generateUrls(MAX_PARALLEL_DOWNLOAD_FILES)
 
                 val finalUrls = getFinalUrls(urls)
 
@@ -41,15 +50,19 @@ class FileService(
                 if (files.size >= BATCH_SIZE) {
                     saveFilesToRepository(files)
                     files.clear()
-                    return@coroutineScope
                 }
             }
         }
     }
 
+    fun stopDownloadAndSaveFiles() {
+        logger.info("Stop download and save files...")
+        isRunning.set(false)
+    }
+
     private suspend fun generateUrls(count: Int): List<String> =
         List(count) {
-            "https://loremflickr.com/${Random.nextInt(10, 5000)}/${Random.nextInt(10, 5000)}"
+            "https://loremflickr.com/${Random.nextInt(MIN_SIZE, MAX_SIZE)}/${Random.nextInt(MIN_SIZE, MAX_SIZE)}"
         }
 
     private suspend fun getFinalUrls(urls: List<String>): List<String> =
@@ -65,8 +78,10 @@ class FileService(
 
     private suspend fun downloadFiles(urls: List<String>): List<ByteArray> =
         coroutineScope {
+            logger.info("Downloading files...")
             val deferredResponses = urls.map { url ->
                 async {
+                    logger.info("Downloading file: $url")
                     fileClient.getFile(url)
                 }
             }
@@ -83,8 +98,11 @@ class FileService(
     }
 
     private suspend fun saveFilesToRepository(files: List<FileEntity>) {
+        logger.info("Saving $BATCH_SIZE files to repository...")
         fileRepository.saveAll(files).collectList().awaitFirstOrNull()
-        summaryRepository.updateSummary().awaitFirstOrNull()
+        val filesSize = files.sumOf { it.size }
+        logger.info("Update summary repository...")
+        summaryRepository.updateSummary(filesSize = filesSize, filesCount = files.size).awaitFirstOrNull()
     }
 
     private fun toFileEntity(

@@ -7,15 +7,17 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
 
+const val BUFFER_SIZE = 1048576
+
 @Configuration
-class WebClientConfig {
+class WebClientConfiguration {
 
     @Bean
     fun webClient() = WebClient.builder()
         .clientConnector(ReactorClientHttpConnector(HttpClient.create().wiretap(true)))
         .exchangeStrategies(ExchangeStrategies.builder()
             .codecs { configurer ->
-                configurer.defaultCodecs().maxInMemorySize(1048576) // 1 МБ
+                configurer.defaultCodecs().maxInMemorySize(BUFFER_SIZE) // 1 МБ
             }
             .build()
         )

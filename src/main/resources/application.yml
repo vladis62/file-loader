@@ -29,3 +29,9 @@ server:
   servlet:
     context-path: /${spring.application.name}
   port: 8080
+
+logging:
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%mdc] %-5level %logger{40} - %msg%n'
+  appender:
+    name: STDOUT

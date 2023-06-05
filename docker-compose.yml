@@ -10,3 +10,25 @@ services:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=file-loader
+    healthcheck:
+      test: nc -z localhost 5432 || exit -1
+      interval: 10s
+      timeout: 20s
+      retries: 5
+      start_period: 10s
+
+  file_loader:
+    container_name: file-loader
+    image: eclipse-temurin:17-jdk-focal
+    volumes:
+      - ./build/docker/classes:/classes
+      - ./build/docker/libs:/libs
+      - ./build/docker/resources:/resources
+    entrypoint:
+      [ "java", "-cp", "/resources:/classes:/libs/*", "ru.vlados.fileloader.FileLoaderApplicationKt" ]
+    ports:
+      - 8080:8080
+    env_file:
+      - service-envs.env
+    depends_on:
+      - postgresql
