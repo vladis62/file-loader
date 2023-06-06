@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.*
 import kotlin.random.Random
 
 const val BATCH_SIZE = 100
-const val MAX_PARALLEL_DOWNLOAD_FILES = 100
+const val MAX_PARALLEL_DOWNLOAD_FILES = 10
 const val MIN_SIZE = 10
 const val MAX_SIZE = 5000
 
